@@ -7,6 +7,7 @@ import {
   getJustArrived,
   getNewArrivals,
 } from "@/lib/products";
+import { subscribeToNewsletter } from "@/lib/newsletter";
 import { atelier, hero, services } from "@/lib/sample-data";
 
 /** Rebuild at most every five minutes so catalogue edits land without a deploy. */
@@ -196,7 +197,9 @@ export default async function Home() {
               </p>
             </div>
 
-            <form className="stack-lg" action="#">
+            {/* Server Action, so the address posts in the request body rather
+                than landing in the URL. Nothing persists it yet. */}
+            <form className="stack-lg" action={subscribeToNewsletter}>
               <div>
                 <label htmlFor="email" className="field-label">
                   Email address
