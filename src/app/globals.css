@@ -1,26 +1,618 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================================================
+   Atelier — global design system
+   Reference language: contemporary luxury fashion retail (gucci.com et al.)
+   Principles: paper-white canvas, photography carries the page, chrome is
+   hairline-thin, type is either a large Renaissance serif or small capitals
+   with wide tracking. Nothing is rounded. Nothing has a shadow.
+   ========================================================================== */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* --- Color -------------------------------------------------------------
+     A near-monochrome palette. Ink on paper, three greys, one bottle green
+     borrowed from the house-ribbon tradition, one oxblood reserved for
+     markdowns. Colors are never decorative here. */
+  --color-paper: #ffffff; /* page canvas */
+  --color-bone: #f6f4f1; /* alternating band / product image backdrop */
+  --color-ink: #000000; /* headings, primary actions */
+  --color-graphite: #3d3b38; /* body copy */
+  --color-ash: #6e6a65; /* meta, captions, placeholders */
+  --color-hairline: #dcd8d3; /* all rules and input borders */
+  --color-ribbon: #1e4437; /* single accent: badges, focus ring */
+  --color-oxblood: #8c2b28; /* markdowns and stock warnings only */
+
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+
+  /* --- Type --------------------------------------------------------------
+     Two families, clearly distinct in build: a Garamond-lineage serif for
+     display (the Granjon-ish voice of the wordmark) and a grotesque for
+     every functional surface — nav, buttons, prices, forms. */
+  --font-display: var(--font-eb-garamond), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-archivo), "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+
+  /* Modular scale, 1.25 from a 16px body. Display sizes are fluid so a
+     hero headline stays a headline at 390px and at 1920px. */
+  --text-2xs: 0.6875rem; /* 11px — legal, badges */
+  --text-xs: 0.75rem; /* 12px — nav, buttons, eyebrows */
+  --text-sm: 0.8125rem; /* 13px — product meta, prices */
+  --text-base: 1rem; /* 16px — body */
+  --text-lg: 1.125rem; /* 18px — lead paragraph */
+  --text-xl: clamp(1.25rem, 0.5vw + 1.13rem, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1vw + 1.25rem, 2rem);
+  --text-3xl: clamp(1.875rem, 2vw + 1.4rem, 2.75rem);
+  --text-4xl: clamp(2.25rem, 3.5vw + 1.4rem, 4rem);
+  --text-display: clamp(2.75rem, 7vw + 1rem, 7.5rem); /* hero only */
+
+  --leading-tight: 1.06; /* display serif, set close */
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7; /* serif body needs the extra air */
+
+  /* Tracking is the load-bearing typographic device: capitals open up,
+     large serif display tightens slightly. */
+  --tracking-display: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.06em;
+  --tracking-caps: 0.14em; /* nav, buttons, small capitals */
+  --tracking-widest: 0.22em; /* the wordmark itself */
+
+  /* --- Spacing -----------------------------------------------------------
+     4px base. Section rhythm is deliberately large; whitespace is the
+     product's frame. */
+  --spacing: 0.25rem;
+  --space-gutter: 1.25rem; /* page edge, mobile */
+  --space-gutter-lg: 2.5rem; /* page edge, desktop */
+  --space-section: clamp(3.5rem, 6vw, 7.5rem); /* vertical band rhythm */
+  --space-section-tight: clamp(2rem, 3.5vw, 3.5rem);
+
+  /* --- Containers --------------------------------------------------------
+     Editorial copy stays under ~70 characters; product grids get the wide
+     measure; imagery goes full bleed. */
+  --container-prose: 38rem;
+  --container-narrow: 52rem;
+  --container-page: 90rem;
+  --container-wide: 110rem;
+
+  /* --- Borders & radii ---------------------------------------------------
+     One hairline weight everywhere, and a true zero radius. A rounded
+     corner reads as software; this reads as print. */
+  --radius-none: 0px;
+  --radius-full: 9999px; /* pills for swatches/dots only */
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --duration-fast: 120ms;
+  --duration-base: 240ms;
+  --duration-slow: 600ms;
+
+  /* --- Aspect ratios ----------------------------------------------------- */
+  --aspect-product: 3 / 4; /* packshot */
+  --aspect-look: 2 / 3; /* campaign portrait */
+  --aspect-editorial: 16 / 9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-hairline);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-graphite);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-weight: 400; /* the serif carries weight through size, not bold */
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--text-4xl);
+  }
+  h2 {
+    font-size: var(--text-3xl);
+  }
+  h3 {
+    font-size: var(--text-2xl);
+  }
+  h4 {
+    font-size: var(--text-xl);
+    line-height: var(--leading-snug);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Links inherit ink and carry a hairline underline that thickens on
+     hover — the only hover affordance the system needs for text. */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Prices, sizes, order numbers: never let a proportional figure wobble. */
+  [data-numeric],
+  input[type="number"] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::placeholder {
+    color: var(--color-ash);
+  }
+
+  /* One focus treatment, visible on both paper and bone. */
+  :focus-visible {
+    outline: 1px solid var(--color-ribbon);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ==========================================================================
+   Components — the small set of surfaces every page reuses
+   ========================================================================== */
+
+@layer components {
+  /* --- Typographic roles ------------------------------------------------- */
+
+  /* Hero display type. Use once per page, at most. */
+  .type-display {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    line-height: 0.96;
+    letter-spacing: var(--tracking-display);
+    color: var(--color-ink);
+  }
+
+  /* The wordmark lockup: capitals, extreme tracking, optical centering. */
+  .type-wordmark {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-widest);
+    text-indent: var(--tracking-widest); /* offsets trailing letter-space */
+    color: var(--color-ink);
+  }
+
+  /* Small capitals: navigation, buttons, table headers, filter labels.
+     This is the workhorse of luxury retail UI. */
+  .type-caps {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    line-height: 1;
+  }
+
+  .type-lead {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-graphite);
+  }
+
+  .type-meta {
+    font-size: var(--text-sm);
+    color: var(--color-ash);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  /* --- Buttons -----------------------------------------------------------
+     Two variants only: filled ink (primary commerce action) and hairline
+     outline (secondary). Both are rectangles, full-width on mobile,
+     56px tall, capitals inside. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing) * 2);
+    min-height: 3.5rem;
+    padding-inline: calc(var(--spacing) * 8);
+    border: 1px solid transparent;
+    border-radius: var(--radius-none);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-base) var(--ease-out-soft),
+      color var(--duration-base) var(--ease-out-soft),
+      border-color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .btn-primary {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn-primary:not(:disabled):hover {
+    background-color: var(--color-graphite);
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+  }
+
+  .btn-outline:not(:disabled):hover {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /* Text-only action, e.g. "Remove" in the shopping bag. */
+  .btn-quiet {
+    min-height: auto;
+    padding: 0;
+    background: none;
+    color: var(--color-ash);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .btn-quiet:hover {
+    color: var(--color-ink);
+  }
+
+  /* On mobile a commerce action owns the full measure. Align-self is set
+     explicitly so the revert also holds inside a stretching flex column. */
+  .btn-block {
+    display: flex;
+    width: 100%;
+    align-self: stretch;
+  }
+
+  @media (min-width: 40rem) {
+    .btn-block {
+      display: inline-flex;
+      width: auto;
+      align-self: flex-start;
+    }
+  }
+
+  /* --- Links ------------------------------------------------------------- */
+
+  /* Editorial / inline link: hairline underline, thickens on hover. */
+  .link {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-thickness var(--duration-fast)
+      var(--ease-out-soft);
+  }
+
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Navigation link: no underline at rest, one grows from the baseline. */
+  .link-nav {
+    position: relative;
+    display: inline-block;
+    padding-block: calc(var(--spacing) * 1);
+    color: var(--color-ink);
+  }
+
+  .link-nav::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+
+  .link-nav:hover::after,
+  .link-nav[aria-current]::after {
+    transform: scaleX(1);
+  }
+
+  /* --- Fields ------------------------------------------------------------
+     Underline-only inputs; a boxed field would read as a form, and this
+     should read as a label on a garment. */
+  .field {
+    width: 100%;
+    padding-block: calc(var(--spacing) * 3);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--color-hairline);
+    border-radius: var(--radius-none);
+    color: var(--color-ink);
+    font-size: var(--text-base);
+  }
+
+  .field:focus {
+    outline: none;
+    border-bottom-color: var(--color-ink);
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: calc(var(--spacing) * 2);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--color-ash);
+  }
+
+  /* --- Disclosure rows: product details, care, shipping ------------------
+     A hairline row that opens in place. The marker is typographic so there
+     is no icon dependency. */
+  .disclosure {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .disclosure > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing) * 4);
+    padding-block: calc(var(--spacing) * 4);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .disclosure > summary::after {
+    content: "+";
+    font-size: var(--text-base);
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .disclosure[open] > summary::after {
+    content: "\2013"; /* en dash */
+  }
+
+  .disclosure-body {
+    padding-bottom: calc(var(--spacing) * 5);
+  }
+
+  /* --- Stock state -------------------------------------------------------
+     A dot plus a label. Colour is set per state by the caller; the dot
+     inherits it so the two never disagree. */
+  .stock {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .stock::before {
+    content: "";
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: var(--radius-full);
+    background-color: currentColor;
+  }
+
+  /* --- Price -------------------------------------------------------------- */
+  .price {
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink);
+  }
+
+  .price-was {
+    color: var(--color-ash);
+    text-decoration: line-through;
+  }
+
+  .price-now {
+    color: var(--color-oxblood);
+  }
+}
+
+/* ==========================================================================
+   Utilities — responsive primitives
+   ========================================================================== */
+
+/* Page container: gutters widen with the viewport, content caps at 1440px. */
+@utility container-page {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: var(--space-gutter);
+  @media (width >= 64rem) {
+    padding-inline: var(--space-gutter-lg);
+  }
+}
+
+/* Same gutters, no cap — for campaign imagery that should run edge to edge. */
+@utility container-bleed {
+  width: 100%;
+  max-width: var(--container-wide);
+  margin-inline: auto;
+}
+
+/* Reading measure for editorial copy and legal pages. */
+@utility container-prose {
+  width: 100%;
+  max-width: var(--container-prose);
+  margin-inline: auto;
+  padding-inline: var(--space-gutter);
+}
+
+/* Vertical band rhythm. */
+@utility section {
+  padding-block: var(--space-section);
+}
+
+@utility section-tight {
+  padding-block: var(--space-section-tight);
+}
+
+/* Product grid: 2-up on phones (luxury sites rarely drop to 1-up, the pair
+   reads as a rail), 3-up at tablet, 4-up on desktop. Gaps are asymmetric —
+   wider rows than columns, so captions belong to the image above them. */
+@utility grid-products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: calc(var(--spacing) * 2);
+  row-gap: calc(var(--spacing) * 12);
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: calc(var(--spacing) * 4);
+  }
+  @media (width >= 80rem) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Two-column editorial split: stacked on mobile, image/text pair above. */
+@utility grid-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(var(--spacing) * 8);
+  @media (width >= 64rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--spacing) * 16);
+    align-items: center;
+  }
+}
+
+/* Horizontal snap rail — "you may also like", size runs, look carousels.
+   Flex rather than grid: a grid scroll container drops its inline padding for
+   the first track, so the rail would lose the page gutter. Padding lives here
+   instead of on a container utility so cards can run past the right edge. */
+@utility rail {
+  display: flex;
+  gap: calc(var(--spacing) * 3);
+  overflow-x: auto;
+  padding-inline: var(--space-gutter);
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: var(--space-gutter);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  > * {
+    flex: 0 0 72%;
+    scroll-snap-align: start;
+  }
+  @media (width >= 48rem) {
+    > * {
+      flex-basis: 32%;
+    }
+  }
+  @media (width >= 64rem) {
+    padding-inline: var(--space-gutter-lg);
+    scroll-padding-inline-start: var(--space-gutter-lg);
+  }
+  @media (width >= 80rem) {
+    > * {
+      flex-basis: 23%;
+    }
+  }
+}
+
+/* Image frame: fixed ratio on a bone backdrop so mixed packshots align. */
+@utility media-frame {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bone);
+  aspect-ratio: var(--aspect-product);
+  > img,
+  > video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* Vertical stack with a consistent step — replaces ad-hoc margins. */
+@utility stack-sm {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+@utility stack {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+@utility stack-lg {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
+
+/* Hairline rules, called out as utilities so the weight is never guessed. */
+@utility rule {
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+@utility rule-top {
+  border-top: 1px solid var(--color-hairline);
 }

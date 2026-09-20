@@ -1,69 +1,232 @@
 import Image from "next/image";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { ProductCard } from "@/components/product-card";
+import {
+  getCategoriesWithCounts,
+  getJustArrived,
+  getNewArrivals,
+} from "@/lib/products";
+import { atelier, hero, services } from "@/lib/sample-data";
 
-export default function Home() {
+/** Rebuild at most every five minutes so catalogue edits land without a deploy. */
+export const revalidate = 300;
+
+export default async function Home() {
+  const [collections, newArrivals, justArrived] = await Promise.all([
+    getCategoriesWithCounts(),
+    getNewArrivals(),
+    getJustArrived(),
+  ]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <>
+      <SiteHeader />
+
+      <main className="flex-1">
+        {/* --- Hero: one image, one headline, held to the lower-left ------- */}
+        <section className="relative isolate">
+          <div className="relative h-[78svh] min-h-[32rem] w-full lg:h-[86svh]">
             <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+              src={hero.image}
+              alt={hero.alt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            {/* Scrim only where type sits, so the photograph stays a photograph */}
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"
+            />
+          </div>
+
+          <div className="container-page absolute inset-x-0 bottom-0 pb-12 lg:pb-20">
+            <div className="stack max-w-xl">
+              <p className="type-caps text-white/80">{hero.season}</p>
+              <h1 className="type-display text-paper">{hero.title}</h1>
+              <p className="type-lead text-paper/90 max-w-md">{hero.copy}</p>
+              <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="#new-arrivals"
+                  className="btn btn-primary btn-block bg-paper text-ink hover:bg-paper/85"
+                >
+                  Shop the collection
+                </a>
+                <a
+                  href="#atelier"
+                  className="btn btn-outline btn-block border-paper text-paper hover:bg-paper hover:text-ink"
+                >
+                  See the campaign
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* --- Featured collections --------------------------------------- */}
+        <section className="container-page section">
+          <div className="rule flex flex-wrap items-baseline justify-between gap-4 pb-6">
+            <h2>Collections</h2>
+            <a href="#" className="type-caps link-nav py-2">
+              View all
+            </a>
+          </div>
+
+          <ul className="mt-10 grid gap-x-4 gap-y-12 md:grid-cols-3">
+            {collections.map((collection) => (
+              <li key={collection.slug}>
+                <a href={`/collections/${collection.slug}`} className="group block">
+                  <div className="media-frame aspect-[2/3]">
+                    <Image
+                      src={collection.image}
+                      alt={collection.alt}
+                      fill
+                      sizes="(min-width: 48rem) 31vw, 92vw"
+                      className="transition-transform duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="stack-sm mt-5 flex-row items-baseline justify-between">
+                    <h3 className="text-2xl">{collection.name}</h3>
+                    <p className="type-meta text-2xs" data-numeric>
+                      {collection.pieceCount} pieces
+                    </p>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* --- New arrivals grid ------------------------------------------ */}
+        <section id="new-arrivals" className="bg-bone">
+          <div className="container-page section">
+            <div className="rule flex flex-wrap items-baseline justify-between gap-4 pb-6">
+              <h2>New arrivals</h2>
+              <a href="#" className="type-caps link-nav py-2">
+                Shop all
+              </a>
+            </div>
+
+            <div className="grid-products mt-10">
+              {newArrivals.map((product, i) => (
+                <ProductCard key={product.slug} product={product} priority={i < 2} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* --- Atelier story: image and text, equal weight ---------------- */}
+        <section id="atelier" className="container-page section">
+          <div className="grid-split">
+            <div className="media-frame aspect-[4/5]">
+              <Image
+                src={atelier.image}
+                alt={atelier.alt}
+                fill
+                sizes="(min-width: 64rem) 46vw, 92vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="stack-lg">
+              <h2 className="max-w-md">{atelier.title}</h2>
+              <div className="stack">
+                {atelier.copy.map((paragraph) => (
+                  <p key={paragraph} className="type-lead max-w-prose">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+              <a href="#" className="btn btn-outline self-start">
+                Inside the workshop
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* --- Just arrived rail ------------------------------------------ */}
+        <section className="section-tight rule-top">
+          <div className="container-page">
+            <div className="flex flex-wrap items-baseline justify-between gap-4">
+              <h2 className="text-2xl">Just arrived</h2>
+              <a href="#" className="type-caps link-nav py-2">
+                All new in
+              </a>
+            </div>
+          </div>
+          {/* Rail breaks the container so cards run to the edge on mobile */}
+          <div className="rail mt-8 pb-2">
+            {justArrived.map((product) => (
+              <ProductCard
+                key={product.slug}
+                product={product}
+                sizes="(min-width: 80rem) 23vw, (min-width: 48rem) 32vw, 72vw"
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* --- Services --------------------------------------------------- */}
+        <section className="bg-bone">
+          <div className="container-page section-tight">
+            <ul className="grid gap-10 md:grid-cols-3">
+              {services.map((service) => (
+                <li key={service.title} className="stack-sm">
+                  <h3 className="font-sans text-ink text-sm font-medium tracking-normal">
+                    {service.title}
+                  </h3>
+                  <p className="text-ash text-sm">{service.copy}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* --- Newsletter -------------------------------------------------- */}
+        <section className="container-page section">
+          <div className="grid-split">
+            <div className="stack">
+              <h2 className="max-w-sm text-3xl">
+                Collections reach our clients first
+              </h2>
+              <p className="type-meta max-w-sm">
+                One letter each month: new pieces, private appointments, nothing
+                else.
+              </p>
+            </div>
+
+            <form className="stack-lg" action="#">
+              <div>
+                <label htmlFor="email" className="field-label">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="you@example.com"
+                  className="field"
+                />
+              </div>
+              <button type="submit" className="btn btn-primary btn-block sm:min-w-56">
+                Sign up
+              </button>
+              <p className="type-meta text-2xs max-w-sm">
+                By signing up you agree to our{" "}
+                <a href="#" className="link">
+                  privacy policy
+                </a>
+                . Unsubscribe in one click.
+              </p>
+            </form>
+          </div>
+        </section>
       </main>
-    </div>
+
+      <SiteFooter />
+    </>
   );
 }
