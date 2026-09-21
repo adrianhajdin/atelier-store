@@ -42,26 +42,48 @@ export const services = [
   },
 ];
 
+/**
+ * Chrome navigation. Only the routes that exist carry a real href; the rest
+ * stay on "#" until their pages land.
+ */
 export const footerNav = [
   {
     heading: "Client services",
-    links: ["Contact us", "Shipping", "Returns", "Order tracking", "Repairs"],
+    links: [
+      { label: "Contact us", href: "#" },
+      { label: "Shipping", href: "#" },
+      { label: "Returns", href: "#" },
+      { label: "Order tracking", href: "#" },
+      { label: "Repairs", href: "#" },
+    ],
   },
   {
     heading: "The house",
-    links: ["Our story", "Sustainability", "Careers", "Store locator", "Press"],
+    links: [
+      { label: "Our story", href: "#" },
+      { label: "Sustainability", href: "#" },
+      { label: "Careers", href: "#" },
+      { label: "Store locator", href: "#" },
+      { label: "Press", href: "#" },
+    ],
   },
   {
     heading: "Shop",
-    links: ["New in", "Women", "Men", "Leather goods", "Gifts"],
+    links: [
+      { label: "New in", href: "/new-arrivals" },
+      { label: "Women", href: "#" },
+      { label: "Men", href: "#" },
+      { label: "Leather goods", href: "#" },
+      { label: "Gifts", href: "#" },
+    ],
   },
 ];
 
 export const primaryNav = [
-  "New in",
-  "Women",
-  "Men",
-  "Leather goods",
-  "Gifts",
-  "Stories",
+  { label: "New in", href: "/new-arrivals" },
+  { label: "Women", href: "#" },
+  { label: "Men", href: "#" },
+  { label: "Leather goods", href: "#" },
+  { label: "Gifts", href: "#" },
+  { label: "Stories", href: "#" },
 ];

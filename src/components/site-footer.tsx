@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { footerNav } from "@/lib/sample-data";
 
 export function SiteFooter() {
@@ -22,10 +24,13 @@ export function SiteFooter() {
               </h2>
               <ul className="stack mt-6">
                 {group.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-ash hover:text-ink inline-block py-1 text-sm">
-                      {link}
-                    </a>
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-ash hover:text-ink inline-block py-1 text-sm"
+                    >
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>

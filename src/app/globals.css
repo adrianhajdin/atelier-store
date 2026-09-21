@@ -493,6 +493,18 @@
   margin-inline: auto;
 }
 
+/* Between prose and page: order confirmations, the bag, anything that is a
+   single column of records rather than a reading measure or a grid. */
+@utility container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--space-gutter);
+  @media (width >= 64rem) {
+    padding-inline: var(--space-gutter-lg);
+  }
+}
+
 /* Reading measure for editorial copy and legal pages. */
 @utility container-prose {
   width: 100%;

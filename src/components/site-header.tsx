@@ -1,17 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState, type ReactNode } from "react";
 import { primaryNav } from "@/lib/sample-data";
 
 /**
  * Centred wordmark, navigation split either side of it on desktop, drawer on
  * mobile. The header is sticky and gains a hairline only once the page has
  * scrolled, so it sits on the hero image without a seam.
+ *
+ * `account` and `bag` are slots rather than session reads of their own: this
+ * stays a client component for the scroll hairline and the drawer, and pages
+ * decide whether they can afford the dynamic render a live session lookup
+ * forces. Each is rendered in two places, so pass something presentational.
+ *
+ * The four catalogue routes (`/`, `/new-arrivals`, `/collections/[slug]`,
+ * `/products/[slug]`) deliberately pass neither: any server read of
+ * `headers()` in this shell would make them dynamic and kill their
+ * `revalidate = 300` and `generateStaticParams`. That is why the default bag
+ * link carries no count. If a live count is wanted there one day, fetch it
+ * from a client component after hydration — do not put a server component in
+ * this shell.
  */
-export function SiteHeader() {
+export function SiteHeader({
+  account,
+  bag,
+}: {
+  account?: ReactNode;
+  bag?: ReactNode;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+
+  /* Close on navigation. The per-link handlers below cover most of it, but the
+     `account` slot is rendered on the server and cannot carry one. Adjusted
+     during render rather than in an effect, so the drawer never paints open
+     on the new route. */
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
+    setMenuOpen(false);
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -53,10 +84,10 @@ export function SiteHeader() {
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="type-caps flex items-center gap-8">
             {primaryNav.map((item) => (
-              <li key={item}>
-                <a href="#" className="link-nav py-2">
-                  {item}
-                </a>
+              <li key={item.label}>
+                <Link href={item.href} className="link-nav py-2">
+                  {item.label}
+                </Link>
               </li>
             ))}
           </ul>
@@ -76,14 +107,18 @@ export function SiteHeader() {
             </a>
           </li>
           <li className="hidden sm:block">
-            <a href="#" className="link-nav py-3">
-              Account
-            </a>
+            {account ?? (
+              <Link href="/account" className="link-nav py-3">
+                Account
+              </Link>
+            )}
           </li>
           <li>
-            <a href="#" className="link-nav py-3">
-              Bag <span data-numeric>(0)</span>
-            </a>
+            {bag ?? (
+              <Link href="/bag" className="link-nav py-3">
+                Bag
+              </Link>
+            )}
           </li>
         </ul>
       </div>
@@ -107,21 +142,37 @@ export function SiteHeader() {
         <nav aria-label="Main" className="container-page section-tight">
           <ul className="stack-lg">
             {primaryNav.map((item) => (
-              <li key={item}>
-                <a href="#" className="font-display text-3xl text-ink">
-                  {item}
-                </a>
+              <li key={item.label}>
+                <Link
+                  href={item.href}
+                  className="font-display text-3xl text-ink"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
               </li>
             ))}
           </ul>
           <ul className="type-caps stack rule-top mt-12 pt-8">
-            {["Search", "Account", "Bag"].map((item) => (
-              <li key={item}>
-                <a href="#" className="text-ash inline-block py-1">
-                  {item}
-                </a>
-              </li>
-            ))}
+            <li>
+              <a href="#" className="text-ash inline-block py-1">
+                Search
+              </a>
+            </li>
+            <li>
+              {account ?? (
+                <Link href="/account" className="text-ash inline-block py-1">
+                  Account
+                </Link>
+              )}
+            </li>
+            <li>
+              {bag ?? (
+                <Link href="/bag" className="text-ash inline-block py-1">
+                  Bag
+                </Link>
+              )}
+            </li>
           </ul>
         </nav>
       </div>

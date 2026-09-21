@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
@@ -78,7 +79,10 @@ export default async function Home() {
           <ul className="mt-10 grid gap-x-4 gap-y-12 md:grid-cols-3">
             {collections.map((collection) => (
               <li key={collection.slug}>
-                <a href={`/collections/${collection.slug}`} className="group block">
+                <Link
+                  href={`/collections/${collection.slug}`}
+                  className="group block"
+                >
                   <div className="media-frame aspect-[2/3]">
                     <Image
                       src={collection.image}
@@ -94,7 +98,7 @@ export default async function Home() {
                       {collection.pieceCount} pieces
                     </p>
                   </div>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -105,9 +109,9 @@ export default async function Home() {
           <div className="container-page section">
             <div className="rule flex flex-wrap items-baseline justify-between gap-4 pb-6">
               <h2>New arrivals</h2>
-              <a href="#" className="type-caps link-nav py-2">
+              <Link href="/new-arrivals" className="type-caps link-nav py-2">
                 Shop all
-              </a>
+              </Link>
             </div>
 
             <div className="grid-products mt-10">
@@ -151,9 +155,9 @@ export default async function Home() {
           <div className="container-page">
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <h2 className="text-2xl">Just arrived</h2>
-              <a href="#" className="type-caps link-nav py-2">
+              <Link href="/new-arrivals" className="type-caps link-nav py-2">
                 All new in
-              </a>
+              </Link>
             </div>
           </div>
           {/* Rail breaks the container so cards run to the edge on mobile */}

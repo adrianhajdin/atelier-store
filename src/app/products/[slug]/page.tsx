@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToBagForm } from "@/components/add-to-bag-form";
 import { ProductCard } from "@/components/product-card";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -54,7 +55,10 @@ export default async function ProductPage({
             </li>
             <li aria-hidden>/</li>
             <li>
-              <Link href="/" className="hover:text-ink">
+              <Link
+                href={`/collections/${product.categorySlug}`}
+                className="hover:text-ink"
+              >
                 {product.category}
               </Link>
             </li>
@@ -143,13 +147,7 @@ export default async function ProductPage({
             </dl>
 
             <div className="stack">
-              <button
-                type="button"
-                className="btn btn-primary btn-block"
-                disabled={soldOut}
-              >
-                {soldOut ? "Sold out" : "Add to bag"}
-              </button>
+              <AddToBagForm slug={product.slug} soldOut={soldOut} />
               <button type="button" className="btn btn-outline btn-block">
                 {soldOut ? "Email me when it returns" : "Save for later"}
               </button>
@@ -196,7 +194,10 @@ export default async function ProductPage({
           <div className="container-page">
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <h2 className="text-2xl">You may also like</h2>
-              <Link href="/" className="type-caps link-nav py-2">
+              <Link
+                href={`/collections/${product.categorySlug}`}
+                className="type-caps link-nav py-2"
+              >
                 All {product.category.toLowerCase()}
               </Link>
             </div>

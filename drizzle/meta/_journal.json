@@ -8,6 +8,20 @@
       "when": 1789906493087,
       "tag": "0000_even_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789988063712,
+      "tag": "0001_minor_venus",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789990123224,
+      "tag": "0002_bent_eternity",
+      "breakpoints": true
     }
   ]
 }
