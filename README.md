@@ -135,7 +135,9 @@ STRIPE_SECRET_KEY=""
 STRIPE_WEBHOOK_SECRET=""
 ```
 
-Replace the placeholder values with your real credentials. You can get these by signing up at: [**Example**](https://jsm.dev/example).
+Replace the placeholder values with your real credentials. You can get these by signing up at:
+- **Neon Postgres:** [neon.tech](https://console.neon.tech)
+- **Stripe:** [dashboard.stripe.com](https://dashboard.stripe.com)
 
 **Running the Project**
 
