@@ -10,11 +10,11 @@
 <img src="https://img.shields.io/badge/-Claude%20Code-D97706?style=for-the-badge&logo=anthropic&logoColor=white" />
 <img src="https://img.shields.io/badge/-Next.js-black?style=for-the-badge&logo=Next.js&logoColor=white" />
 <img src="https://img.shields.io/badge/-CodeRabbit-FF4500?style=for-the-badge&logo=coderabbit&logoColor=white" />
-
+<br/>
 <img src="https://img.shields.io/badge/-Neon-00E599?style=for-the-badge&logo=neon&logoColor=black" />
 <img src="https://img.shields.io/badge/-PostgreSQL-4169E1?style=for-the-badge&logo=PostgreSQL&logoColor=white" />
 <img src="https://img.shields.io/badge/-Drizzle%20ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" />
-
+<br/>
 <img src="https://img.shields.io/badge/-Tailwind%20CSS-06B6D4?style=for-the-badge&logo=Tailwind-CSS&logoColor=white" />
 <img src="https://img.shields.io/badge/-TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white" />
 
